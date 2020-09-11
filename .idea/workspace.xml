@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="282ee969-c1ff-473c-a97b-79e1d2d16b6b" name="Default Changelist" comment="" />
+    <list default="true" id="282ee969-c1ff-473c-a97b-79e1d2d16b6b" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LICENSE" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/flappybird.py" beforeDir="false" afterPath="$PROJECT_DIR$/flappybird.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -73,7 +78,7 @@
       <workItem from="1599771751322" duration="2317000" />
       <workItem from="1599774171270" duration="19000" />
       <workItem from="1599803201038" duration="3801000" />
-      <workItem from="1599844757445" duration="5292000" />
+      <workItem from="1599844757445" duration="8788000" />
     </task>
     <servers />
   </component>
@@ -85,28 +90,28 @@
       <screen x="0" y="0" width="1920" height="1044" />
     </state>
     <state x="552" y="345" width="428" height="484" key="FileChooserDialogImpl/0.0.1920.1044@0.0.1920.1044" timestamp="1599773524344" />
-    <state width="1874" height="275" key="GridCell.Tab.0.bottom" timestamp="1599850238416">
+    <state width="1874" height="275" key="GridCell.Tab.0.bottom" timestamp="1599860330732">
       <screen x="0" y="0" width="1920" height="1044" />
     </state>
-    <state width="1874" height="275" key="GridCell.Tab.0.bottom/0.0.1920.1044@0.0.1920.1044" timestamp="1599850238416" />
-    <state width="1874" height="275" key="GridCell.Tab.0.center" timestamp="1599850238416">
+    <state width="1874" height="275" key="GridCell.Tab.0.bottom/0.0.1920.1044@0.0.1920.1044" timestamp="1599860330732" />
+    <state width="1874" height="275" key="GridCell.Tab.0.center" timestamp="1599860330731">
       <screen x="0" y="0" width="1920" height="1044" />
     </state>
-    <state width="1874" height="275" key="GridCell.Tab.0.center/0.0.1920.1044@0.0.1920.1044" timestamp="1599850238416" />
-    <state width="1874" height="275" key="GridCell.Tab.0.left" timestamp="1599850238416">
+    <state width="1874" height="275" key="GridCell.Tab.0.center/0.0.1920.1044@0.0.1920.1044" timestamp="1599860330731" />
+    <state width="1874" height="275" key="GridCell.Tab.0.left" timestamp="1599860330727">
       <screen x="0" y="0" width="1920" height="1044" />
     </state>
-    <state width="1874" height="275" key="GridCell.Tab.0.left/0.0.1920.1044@0.0.1920.1044" timestamp="1599850238416" />
-    <state width="1874" height="275" key="GridCell.Tab.0.right" timestamp="1599850238416">
+    <state width="1874" height="275" key="GridCell.Tab.0.left/0.0.1920.1044@0.0.1920.1044" timestamp="1599860330727" />
+    <state width="1874" height="275" key="GridCell.Tab.0.right" timestamp="1599860330732">
       <screen x="0" y="0" width="1920" height="1044" />
     </state>
-    <state width="1874" height="275" key="GridCell.Tab.0.right/0.0.1920.1044@0.0.1920.1044" timestamp="1599850238416" />
+    <state width="1874" height="275" key="GridCell.Tab.0.right/0.0.1920.1044@0.0.1920.1044" timestamp="1599860330732" />
     <state x="796" y="194" key="SettingsEditor" timestamp="1599773527387">
       <screen x="0" y="0" width="1920" height="1044" />
     </state>
     <state x="796" y="194" key="SettingsEditor/0.0.1920.1044@0.0.1920.1044" timestamp="1599773527387" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/flappy_bird_pygame$flappybird.coverage" NAME="flappybird Coverage Results" MODIFIED="1599850253726" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/flappy_bird_pygame$flappybird.coverage" NAME="flappybird Coverage Results" MODIFIED="1599860447818" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

@@ -57,12 +57,15 @@ class Bird(pygame.sprite.Sprite):
     CLIMB_SPEED = 0.4
     CLIMB_DURATION = 150
 
-    def think(self, pipe_pair):  # bird decides weather it should jump or not -arya
+    def think(self, pipes):  # bird decides weather it should jump or not -arya
         # our inputs are based on 5 factors: the bird's y, the pipes top and bottom y, the coming pipes x,
         # and the birds vertical velocity
-        y_velocity = self.CLIMB_SPEED if self.msec_to_climb > 0 else self.SINK_SPEED
-        inputs = np.array([self.y / WIN_HEIGHT, (pipe_pair.top_pieces * 32) / WIN_HEIGHT,
-                           (pipe_pair.top_pieces * 32 + PipePair.WIDTH) / 512, pipe_pair.x / WIN_WIDTH, y_velocity]).reshape(1, 5)
+        cur_pipe = pipes[0] if pipes[0].x > 0 else pipes[-1]  # we want to get latest non-negative pipe - arya
+        y_velocity = self.CLIMB_SPEED if self.msec_to_climb > 0 else self.SINK_SPEED  # the current velocity of bird
+
+        inputs = np.array([self.y / WIN_HEIGHT, (cur_pipe.top_pieces * 32) / WIN_HEIGHT,
+                           (cur_pipe.top_pieces * 32 + PipePair.WIDTH) / 512, cur_pipe.x / WIN_WIDTH,
+                           y_velocity]).reshape(1, 5)
         # for a small period coming pipe's x will be negative, fix if needed
         output = abs(Bird.brain.predict(
             inputs))  # deciding weather bird should jump or not based on its brain input
@@ -106,12 +109,12 @@ class Bird(pygame.sprite.Sprite):
         delta_frames: The number of frames elapsed since this method was
             last called.
         """
-        if self.msec_to_climb > 0:
+        if self.msec_to_climb > 0 and 0 < self.y:
             frac_climb_done = 1 - self.msec_to_climb / Bird.CLIMB_DURATION
             self.y -= (Bird.CLIMB_SPEED * frames_to_msec(delta_frames) *
                        (1 - math.cos(frac_climb_done * math.pi)))
             self.msec_to_climb -= frames_to_msec(delta_frames)
-        else:
+        elif self.y < WIN_HEIGHT - Bird.HEIGHT:
             self.y += Bird.SINK_SPEED * frames_to_msec(delta_frames)
 
     @property
@@ -395,16 +398,19 @@ def main():
 
         if paused:
             continue  # don't draw anything
-        Bird.think(bird, pipes[0])
+
+        Bird.think(bird, pipes)
         # velocity = bird.CLIMB_SPEED if bird.msec_to_climb > 0 else bird.SINK_SPEED
         # print(velocity)
         # print(pipes[0].top_pieces * 32)
         # print(pipes[0].top_pieces * 32 + 80)
         # print(pipes[0].x)
         # print(pipes[0].x / WIN_WIDTH)
+        # print(bird.y)
+        # print(cur_pipe.x)
         # check for collisions
         pipe_collision = any(p.collides_with(bird) for p in pipes)
-        if pipe_collision or 0 >= bird.y or bird.y >= WIN_HEIGHT - Bird.HEIGHT:
+        if pipe_collision:
             done = True
 
         for x in (0, WIN_WIDTH / 2):
