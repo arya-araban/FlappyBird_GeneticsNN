@@ -10,6 +10,7 @@ class NeuralNetwork:
         self.hidden_nodes = hidden_nodes
         self.output_nodes = output_nodes
         self.model = None
+        self.create_model(tf.keras.Sequential())
 
     def create_model(self, model):
         self.model = model
@@ -18,27 +19,24 @@ class NeuralNetwork:
 
     def predict(self, input_features):
         xs = np.array(input_features).reshape(1, len(input_features))
-
         ys = self.model.predict(xs)
         return ys
 
-    def mutate(self, rate):  # mutating NN weights with probability of rate
-        weights = self.model.get_weights()
+    def mutate(self, rate):  # mutating NN weights, each weight has probability of rate to mutate
+        whts = self.model.weights
         # mutated_weights = []
-        for i, weight_array in enumerate(weights):
-            for j in range(len(weight_array)):
-                if random.uniform(0, 1) < rate:
-                    wht = self.model.weights[i].numpy()
-                    wht[j] = wht[j] + random.gauss(0, 1)
-                    self.model.weights[i].assign(wht)
+        ff_length = len(whts[0].numpy())  # doesn't matter what index, for all it's the same (since it's a MATRIX)
+        for i in range(len(whts)):
+            if i % 2 == 0:  # we only want to change weights, not the biases
+                for j in range(len(whts[i].numpy())):
+                    wi = whts[i][j].numpy()
+                    for k in range(len(wi)):
+                        if random.uniform(0, 1) <= rate:
+                            wi[k] = wi[k] + random.gauss(0, 1)
+                    self.model.weights[i][j].assign(wi)
 
-
-# m = NeuralNetwork(4, 4, 2)
-# sl = tf.keras.Sequential()
-# m.create_model(sl)
-# print(sl.weights[0][0])
-# print("**********")
-# print(sl.get_weights())
-# print("*****************")
-# m.mutate(0.2)
-# print(sl.get_weights())
+    def copy(self):
+        network = NeuralNetwork(self.input_nodes, self.hidden_nodes, self.output_nodes)
+        network.create_model(tf.keras.Sequential())
+        network.model.set_weights(self.model.get_weights())
+        return network

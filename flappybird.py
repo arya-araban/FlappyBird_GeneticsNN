@@ -9,20 +9,17 @@ import math
 import os
 import random
 import time
-import numpy as np
 import keyboard
-import neat
 from random import randint
 from collections import deque
 
 import pygame
-from pip._vendor.urllib3.filepost import writer
 from pygame.locals import *
 import tensorflow as tf
 
 FPS = 60
-TOTAL = 100  # total number of birds
-FRAME_SKIPS = 15  # think once every x frames, for all birds
+TOTAL = 30  # total number of birds
+FRAME_SKIPS = 15  # all birds think once every x frames (keep this between 1 and 20)
 nm = 0
 ANIMATION_SPEED = 0.18  # pixels per millisecond
 WIN_WIDTH = 284 * 2  # BG image size: 284x512 px; tiled twice
@@ -62,15 +59,14 @@ class Bird(pygame.sprite.Sprite):
     CLIMB_DURATION = 150
 
     def think(self, pipes):  # bird decides weather it should jump or not -arya
-        cur_pipe = (pipes[0]) if pipes[0].x > 0 else pipes[-1]  # we want to get latest non-negative pipe - arya
-        # y_velocity = self.CLIMB_SPEED if self.msec_to_climb > 0 else self.SINK_SPEED  # the current velocity of bird
+        cur_pipe = (pipes[0]) if pipes[0].x > 0 else pipes[-1]
+        # our inputs are based on 4 factors: the bird's y, the pipes top and bottom y, the coming pipes x,
         inputs = [self.y / WIN_HEIGHT, cur_pipe.top_height_px / WIN_HEIGHT,
                   (WIN_HEIGHT - cur_pipe.bottom_height_px) / WIN_HEIGHT, cur_pipe.x / WIN_WIDTH]
 
-        # for a small period coming pipe's x will be negative, fix if needed
         output = self.brain.predict(inputs)  # deciding weather bird should jump or not based on its brain input
         # print(output)
-        if output[0][0] >= output[0][1]:  # just a check to see if we should climb or not, OR TAKE ABS AND >0.5
+        if output[0][0] >= output[0][1]:  # just a check to see if we should climb or not
             self.msec_to_climb = Bird.CLIMB_DURATION * 1.5
         # print(f"{output} and {output[0][0]}")
         return output
@@ -96,12 +92,9 @@ class Bird(pygame.sprite.Sprite):
         self._img_wingup = images
         self._mask_wingup = pygame.mask.from_surface(self._img_wingup)
         self.brain = NeuralNetwork(4, 4, 2) if brain is None else brain
-        self.brain.create_model(tf.keras.Sequential())
         self.alive = True
         self.score = 0
         self.fitness = 0
-        # our inputs are based on 5 factors: the bird's y, the pipes top and bottom y, the coming pipes x,
-        # and the birds vertical velocity
 
     def update(self, delta_frames=1):
         """Update the bird's position.
@@ -211,9 +204,9 @@ class PipePair(pygame.sprite.Sprite):
              3 * PipePair.PIECE_HEIGHT) /  # 2 end pieces + 1 body piece
             PipePair.PIECE_HEIGHT  # to get number of pipe pieces
         )
-        self.bottom_pieces = randint(1, total_pipe_body_pieces)
+        self.bottom_pieces = randint(1, total_pipe_body_pieces) -1
         # here we can change width of pipes to make game easier - Arya
-        self.top_pieces = total_pipe_body_pieces - self.bottom_pieces - 2
+        self.top_pieces = total_pipe_body_pieces - self.bottom_pieces -1
 
         # bottom pipe
         for i in range(1, self.bottom_pieces + 1):
@@ -325,7 +318,8 @@ def load_images():
         # See also: https://github.com/TimoWilken/flappy-bird-pygame/pull/3
         file_name = os.path.join(os.path.dirname(__file__),
                                  'images', img_file_name)
-        img = pygame.image.load(file_name)
+        img = pygame.image.load(file_name)  # we want to get latest non-negative pipe - arya
+        # y_velocity = self.CLIMB_SPEED if self.msec_to_climb > 0 else self.SINK_SPEED  # the current velocity of bird
         img.convert()
         return img
 
@@ -370,28 +364,23 @@ def main():
     pygame.display.set_caption('Pygame Flappy Bird')
 
     clock = pygame.time.Clock()
-    score_font = pygame.font.SysFont(None, 32, bold=True)  # default font
+    game_score_font = pygame.font.SysFont(None, 32, bold=True)  # default font
+    highest_game_score_font = pygame.font.SysFont(None, 22, bold=True)
     images = load_images()
 
-    # the bird stays in the same x position, so bird.x is a constant
-    # center bird on screen
     birds = []  # we need more than one bird - arya
 
     for i in range(TOTAL):
-        # birds.append((Bird(50, int(WIN_HEIGHT / 2 - Bird.HEIGHT / 2), 2,
-        #                    (images['bird-wingup'], images['bird-wingdown']), tf.keras.Sequential())))
         birds.append((Bird(50, int(WIN_HEIGHT / 2 - Bird.HEIGHT / 2), 2,
                            (images['bird-wingup']))))
-
-    # bird = Bird(50, int(WIN_HEIGHT / 2 - Bird.HEIGHT / 2), 2,
-    #           (images['bird-wingup'], images['bird-wingdown']))
 
     pipes = deque()
 
     frame_clock = 0  # this counter is only incremented if the game isn't paused
-    score = 0
+    game_score = 0
     done = paused = False
-    cntr = 0
+    highest_game_score = 0
+    generation_num = 1
     alive_birds = TOTAL  # checker to see if all brids dead
     while not done:
         r = random.uniform(0, 1)
@@ -415,7 +404,6 @@ def main():
 
         if paused:
             continue  # don't draw anything
-        # print(cntr)
 
         for x in (0, WIN_WIDTH / 2):
             display_surface.blit(images['background'], (x, 0))
@@ -426,82 +414,79 @@ def main():
         for p in pipes:
             p.update()
             display_surface.blit(p.image, p.rect)
-        # for step in tf.range(1): #this probably isn't optimized anyway - arya
-        #     step = tf.cast(step, tf.int64)
-        #     if cntr % 10 == 0:  # no need to think on every frame, think once every few frames
-        #         # print(f"bird {step}: {birds[step].think(pipes)}")
-        #         birds[step].think(pipes)
-        #
-        #     pipe_collision = any(p.collides_with(birds[step]) for p in pipes)
-        #     if pipe_collision:  # we're just removing the death condition for now - arya
-        #         birds[step] = None
-        #
-        #     birds[step].update()
-        #     display_surface.blit(birds[step].image, birds[step].rect)
+
         for i in tf.range(len(birds)):
             if birds[i].alive:
-                if cntr % FRAME_SKIPS == 0:  # no need to think on every frame, think once every few frames
+                if game_score % FRAME_SKIPS == 0:  # no need to think on every frame, think once every few frames
                     # print(f"bird {step}: {birds[step].think(pipes)}")
                     birds[i].think(pipes)
 
                 pipe_collision = any(p.collides_with(birds[i]) for p in pipes if p.active)
                 if pipe_collision or 0 >= birds[i].y or birds[i].y >= WIN_HEIGHT - Bird.HEIGHT:
-                     # we're just removing the death condition for now - arya
                     birds[i].alive = False
                     alive_birds -= 1
                     if alive_birds != 0:
                         continue
                     # if we reach here, ALL birds have died, lets bring next generation - arya
+                    if game_score > highest_game_score:
+                        highest_game_score = game_score
+                        # print(f"generation{generation_num} --> high_score!: {highest_game_score}")
+                    generation_num += 1
+                    game_score = 0
                     alive_birds = TOTAL
                     pipes[0].image.fill((0, 0, 0, 0))
                     pipes[0].active = False  # might need to fix this later to remove pipes active - arya
                     calculate_fitness(birds)
-                    # birds_copy = copy.deepcopy(birds)
-                    # birds = []
                     birds = next_generation(birds)
                     break
 
                 birds[i].update()
                 display_surface.blit(birds[i].image, birds[i].rect)
 
-        # update and display score
-        # for p in pipes: # we can't
-        #     if p.x + PipePair.WIDTH < bird.x and not p.score_counted:
-        #         score += 1
-        #         p.score_counted = True
+        game_score += 1
+        game_score_surface = game_score_font.render(str(game_score), True, (255, 255, 255))
+        game_score_x = WIN_WIDTH / 2 - game_score_surface.get_width() / 2
+        display_surface.blit(game_score_surface, (game_score_x, PipePair.PIECE_HEIGHT))
+    # update and display score
+    # for p in pipes: # we can't
+    #     if p.x + PipePair.WIDTH < bird.x and not p.score_counted:
+    #         score += 1
+    #         p.score_counted = True
+        gen_surface = game_score_font.render(f"GENERATION: {str(generation_num)}", True, (255, 0, 0))
+        gen_x = WIN_WIDTH / 2 - gen_surface.get_width() / 2
+        display_surface.blit(gen_surface, (gen_x, WIN_HEIGHT - 30))
 
-        score += 1
-        score_surface = score_font.render(str(score), True, (255, 255, 255))
-        score_x = WIN_WIDTH / 2 - score_surface.get_width() / 2
-        display_surface.blit(score_surface, (score_x, PipePair.PIECE_HEIGHT))
+        game_high_score_surface = highest_game_score_font.render(f"high score: {str(highest_game_score)}", True,
+                                                                 (153, 50, 204))
+        display_surface.blit(game_high_score_surface, (0, WIN_HEIGHT - game_high_score_surface.get_height()))
+
         pygame.display.flip()
         frame_clock += 1
-        cntr += 1
-    print('Game over! Score: %i' % score)
+    print('Game over! Score: %i' % game_score)
     pygame.quit()
 
 
 # ------------------ GA STUFF FROM HERE ON ------------------
+
 def next_generation(birds):
     brds = []
     for i in range(TOTAL):
-        brds.append(Bird(50, int(WIN_HEIGHT / 2 - Bird.HEIGHT / 2), 2,
-                 (load_images()['bird-wingup']) ))
+        brds.append(pick_a_bird(birds))
     return brds
 
 
 def calculate_fitness(birds):
-    total_scores = 0
+    total_bird_scores = 0
     for bird in birds:
-        total_scores += bird.score
-        print(total_scores)
+        total_bird_scores += bird.score
+        # print(total_scores)
     for idx, bird in enumerate(birds):
-        bird.fitness = bird.score / total_scores
+        bird.fitness = bird.score / total_bird_scores
         # print(f"bird[{idx}]: {bird.fitness}")
 
 
 def pick_a_bird(birds):
-    # here we want to randomly pick one of the dead birds after all of them have died
+    # here we want pick one of the dead birds (likelihood a bird is picked is based on its fitness)
     r = random.uniform(0, 1)
     idx = 0
     while r > 0:
@@ -509,9 +494,12 @@ def pick_a_bird(birds):
         idx += 1
     idx -= 1
     bird = birds[idx]
+    # we want to create a copy of the brain of the bird we picked, and put it into another bird
     child = Bird(50, int(WIN_HEIGHT / 2 - Bird.HEIGHT / 2), 2,
-                 (load_images()['bird-wingup']), bird.brain)
+                 (load_images()['bird-wingup']), bird.brain.copy())
+    # print(child.brain.model.get_weights())
     child.brain.mutate(0.1)
+
     return child
 
 
