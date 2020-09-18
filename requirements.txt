@@ -1,5 +1,4 @@
 keyboard==0.13.5
-neat-python==0.92
 pygame==1.9.6
 six==1.15.0
 tensorflow==2.3.0
