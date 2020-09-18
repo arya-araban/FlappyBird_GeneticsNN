@@ -20,11 +20,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="282ee969-c1ff-473c-a97b-79e1d2d16b6b" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/flappybird.py" beforeDir="false" afterPath="$PROJECT_DIR$/flappybird.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ga.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/nn.py" beforeDir="false" afterPath="$PROJECT_DIR$/nn.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test.py" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -185,6 +183,9 @@
       <workItem from="1600189717834" duration="9531000" />
       <workItem from="1600235182424" duration="19014000" />
       <workItem from="1600269043329" duration="3639000" />
+      <workItem from="1600324648315" duration="7872000" />
+      <workItem from="1600419434748" duration="4608000" />
+      <workItem from="1600450377252" duration="4186000" />
     </task>
     <servers />
   </component>
@@ -204,26 +205,30 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="WindowStateProjectService">
+    <state x="843" y="391" width="227" height="263" key="#Notifications" timestamp="1600324680245">
+      <screen x="0" y="0" width="1920" height="1044" />
+    </state>
+    <state x="843" y="391" width="227" height="263" key="#Notifications/0.0.1920.1044@0.0.1920.1044" timestamp="1600324680245" />
     <state x="552" y="345" width="428" height="484" key="FileChooserDialogImpl" timestamp="1599773524344">
       <screen x="0" y="0" width="1920" height="1044" />
     </state>
     <state x="552" y="345" width="428" height="484" key="FileChooserDialogImpl/0.0.1920.1044@0.0.1920.1044" timestamp="1599773524344" />
-    <state width="1874" height="254" key="GridCell.Tab.0.bottom" timestamp="1600271652167">
+    <state width="1874" height="254" key="GridCell.Tab.0.bottom" timestamp="1600455888043">
       <screen x="0" y="0" width="1920" height="1044" />
     </state>
-    <state width="1874" height="254" key="GridCell.Tab.0.bottom/0.0.1920.1044@0.0.1920.1044" timestamp="1600271652167" />
-    <state width="1874" height="254" key="GridCell.Tab.0.center" timestamp="1600271652164">
+    <state width="1874" height="254" key="GridCell.Tab.0.bottom/0.0.1920.1044@0.0.1920.1044" timestamp="1600455888043" />
+    <state width="1874" height="254" key="GridCell.Tab.0.center" timestamp="1600455888043">
       <screen x="0" y="0" width="1920" height="1044" />
     </state>
-    <state width="1874" height="254" key="GridCell.Tab.0.center/0.0.1920.1044@0.0.1920.1044" timestamp="1600271652164" />
-    <state width="1874" height="254" key="GridCell.Tab.0.left" timestamp="1600271652161">
+    <state width="1874" height="254" key="GridCell.Tab.0.center/0.0.1920.1044@0.0.1920.1044" timestamp="1600455888043" />
+    <state width="1874" height="254" key="GridCell.Tab.0.left" timestamp="1600455888043">
       <screen x="0" y="0" width="1920" height="1044" />
     </state>
-    <state width="1874" height="254" key="GridCell.Tab.0.left/0.0.1920.1044@0.0.1920.1044" timestamp="1600271652161" />
-    <state width="1874" height="254" key="GridCell.Tab.0.right" timestamp="1600271652166">
+    <state width="1874" height="254" key="GridCell.Tab.0.left/0.0.1920.1044@0.0.1920.1044" timestamp="1600455888043" />
+    <state width="1874" height="254" key="GridCell.Tab.0.right" timestamp="1600455888043">
       <screen x="0" y="0" width="1920" height="1044" />
     </state>
-    <state width="1874" height="254" key="GridCell.Tab.0.right/0.0.1920.1044@0.0.1920.1044" timestamp="1600271652166" />
+    <state width="1874" height="254" key="GridCell.Tab.0.right/0.0.1920.1044@0.0.1920.1044" timestamp="1600455888043" />
     <state x="796" y="194" key="SettingsEditor" timestamp="1599773527387">
       <screen x="0" y="0" width="1920" height="1044" />
     </state>
@@ -244,7 +249,7 @@
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/flappy_bird_pygame$ga.coverage" NAME="ga Coverage Results" MODIFIED="1600066283006" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/flappy_bird_pygame$test.coverage" NAME="test Coverage Results" MODIFIED="1600109903606" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/flappy_bird_pygame$flappybird.coverage" NAME="flappybird Coverage Results" MODIFIED="1600271652116" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/flappy_bird_pygame$flappybird.coverage" NAME="flappybird Coverage Results" MODIFIED="1600454238138" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/flappy_bird_pygame$nn.coverage" NAME="nn Coverage Results" MODIFIED="1600235523214" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

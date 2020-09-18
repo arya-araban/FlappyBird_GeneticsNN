@@ -18,7 +18,7 @@ from pygame.locals import *
 import tensorflow as tf
 
 FPS = 60
-TOTAL = 30  # total number of birds
+TOTAL = 50  # total number of birds
 FRAME_SKIPS = 15  # all birds think once every x frames (keep this between 1 and 20)
 nm = 0
 ANIMATION_SPEED = 0.18  # pixels per millisecond
@@ -60,9 +60,11 @@ class Bird(pygame.sprite.Sprite):
 
     def think(self, pipes):  # bird decides weather it should jump or not -arya
         cur_pipe = (pipes[0]) if pipes[0].x > 0 else pipes[-1]
-        # our inputs are based on 4 factors: the bird's y, the pipes top and bottom y, the coming pipes x,
+        y_velocity = self.CLIMB_SPEED if self.msec_to_climb > 0 else self.SINK_SPEED  # the current velocity of bird
+        # our inputs are based on 5 factors: the bird's y, the pipes top and bottom y, the coming pipes x,
+        # the birds y_velocity
         inputs = [self.y / WIN_HEIGHT, cur_pipe.top_height_px / WIN_HEIGHT,
-                  (WIN_HEIGHT - cur_pipe.bottom_height_px) / WIN_HEIGHT, cur_pipe.x / WIN_WIDTH]
+                  (WIN_HEIGHT - cur_pipe.bottom_height_px) / WIN_HEIGHT, cur_pipe.x / WIN_WIDTH, y_velocity/10]
 
         output = self.brain.predict(inputs)  # deciding weather bird should jump or not based on its brain input
         # print(output)
@@ -91,7 +93,7 @@ class Bird(pygame.sprite.Sprite):
         self.msec_to_climb = msec_to_climb
         self._img_wingup = images
         self._mask_wingup = pygame.mask.from_surface(self._img_wingup)
-        self.brain = NeuralNetwork(4, 4, 2) if brain is None else brain
+        self.brain = NeuralNetwork(5, 5, 2) if brain is None else brain
         self.alive = True
         self.score = 0
         self.fitness = 0
@@ -204,9 +206,9 @@ class PipePair(pygame.sprite.Sprite):
              3 * PipePair.PIECE_HEIGHT) /  # 2 end pieces + 1 body piece
             PipePair.PIECE_HEIGHT  # to get number of pipe pieces
         )
-        self.bottom_pieces = randint(1, total_pipe_body_pieces) -1
+        self.bottom_pieces = randint(1, total_pipe_body_pieces) - 1
         # here we can change width of pipes to make game easier - Arya
-        self.top_pieces = total_pipe_body_pieces - self.bottom_pieces -1
+        self.top_pieces = total_pipe_body_pieces - self.bottom_pieces - 1
 
         # bottom pipe
         for i in range(1, self.bottom_pieces + 1):
@@ -257,23 +259,22 @@ class PipePair(pygame.sprite.Sprite):
             last called.
         """
         global ANIMATION_SPEED, nm
-
-        if keyboard.is_pressed('+'):
-            Bird.CLIMB_SPEED *= 2
-            Bird.SINK_SPEED *= 2
-            Bird.CLIMB_DURATION /= 2
-            PipePair.ADD_INTERVAL /= 2
-            ANIMATION_SPEED *= 2
-            print('game speed *2')
-            time.sleep(0.1)
-        if keyboard.is_pressed('-'):
-            Bird.CLIMB_SPEED /= 2
-            Bird.SINK_SPEED /= 2
-            Bird.CLIMB_DURATION *= 2
-            PipePair.ADD_INTERVAL *= 2
-            ANIMATION_SPEED /= 2
-            print('game speed /2')
-            time.sleep(0.15)
+        # if keyboard.is_pressed('+'):
+        #     Bird.CLIMB_SPEED *= 2
+        #     Bird.SINK_SPEED *= 2
+        #     Bird.CLIMB_DURATION /= 2
+        #     PipePair.ADD_INTERVAL /= 2
+        #     ANIMATION_SPEED *= 2
+        #     print('game speed *2')
+        #     time.sleep(0.1)
+        # if keyboard.is_pressed('-'):
+        #     Bird.CLIMB_SPEED /= 2
+        #     Bird.SINK_SPEED /= 2
+        #     Bird.CLIMB_DURATION *= 2
+        #     PipePair.ADD_INTERVAL *= 2
+        #     ANIMATION_SPEED /= 2
+        #     print('game speed /2')
+        #     time.sleep(0.15)
 
         self.x -= ANIMATION_SPEED * frames_to_msec(delta_frames)
 
@@ -319,7 +320,7 @@ def load_images():
         file_name = os.path.join(os.path.dirname(__file__),
                                  'images', img_file_name)
         img = pygame.image.load(file_name)  # we want to get latest non-negative pipe - arya
-        # y_velocity = self.CLIMB_SPEED if self.msec_to_climb > 0 else self.SINK_SPEED  # the current velocity of bird
+
         img.convert()
         return img
 
@@ -380,50 +381,42 @@ def main():
     game_score = 0
     done = paused = False
     highest_game_score = 0
+    cycles = cycles_copy = 1
+    n = 1
     generation_num = 1
     alive_birds = TOTAL  # checker to see if all brids dead
     while not done:
-        r = random.uniform(0, 1)
-        clock.tick(FPS)
+        for n in range(cycles):
+            r = random.uniform(0, 1)
+            clock.tick(FPS)
 
-        # Handle this 'manually'.  If we used pygame.time.set_timer(),
-        # pipe addition would be messed up when paused.
-        if not (paused or frame_clock % msec_to_frames(PipePair.ADD_INTERVAL)):
-            pp = PipePair(images['pipe-end'], images['pipe-body'])
-            pipes.append(pp)
-        # we're gonna comment any user input out soon - arya
-        for e in pygame.event.get():
-            if e.type == QUIT or (e.type == KEYUP and e.key == K_ESCAPE):
-                done = True
-                break
-            elif e.type == KEYUP and e.key in (K_PAUSE, K_p):
-                paused = not paused
-            elif e.type == MOUSEBUTTONUP or (e.type == KEYUP and
-                                             e.key in (K_UP, K_RETURN, K_SPACE)):
-                birds[0].msec_to_climb = Bird.CLIMB_DURATION
+            # Handle this 'manually'.  If we used pygame.time.set_timer(),
+            # pipe addition would be messed up when paused.
+            if not (paused or frame_clock % msec_to_frames(PipePair.ADD_INTERVAL)):
+                pp = PipePair(images['pipe-end'], images['pipe-body'])
+                pipes.append(pp)
+            # we're gonna comment any user input out soon - arya
+            if keyboard.is_pressed('+'):
+                cycles += 50  # draw once every x+50 frames
+                time.sleep(0.15)
+            if keyboard.is_pressed('-'):
+                cycles = 1  # reset drawing to 1
+                time.sleep(0.15)
+            while pipes and not pipes[0].visible:
+                pipes.popleft()
 
-        if paused:
-            continue  # don't draw anything
+            for p in pipes:
+                p.update()
 
-        for x in (0, WIN_WIDTH / 2):
-            display_surface.blit(images['background'], (x, 0))
-
-        while pipes and not pipes[0].visible:
-            pipes.popleft()
-
-        for p in pipes:
-            p.update()
-            display_surface.blit(p.image, p.rect)
-
-        for i in tf.range(len(birds)):
-            if birds[i].alive:
+            for bird in birds:
+                if not bird.alive: continue
                 if game_score % FRAME_SKIPS == 0:  # no need to think on every frame, think once every few frames
                     # print(f"bird {step}: {birds[step].think(pipes)}")
-                    birds[i].think(pipes)
+                    bird.think(pipes)
 
-                pipe_collision = any(p.collides_with(birds[i]) for p in pipes if p.active)
-                if pipe_collision or 0 >= birds[i].y or birds[i].y >= WIN_HEIGHT - Bird.HEIGHT:
-                    birds[i].alive = False
+                pipe_collision = any(p.collides_with(bird) for p in pipes if p.active)
+                if pipe_collision or 0 >= bird.y or bird.y >= WIN_HEIGHT - Bird.HEIGHT:
+                    bird.alive = False
                     alive_birds -= 1
                     if alive_birds != 0:
                         continue
@@ -440,18 +433,19 @@ def main():
                     birds = next_generation(birds)
                     break
 
-                birds[i].update()
-                display_surface.blit(birds[i].image, birds[i].rect)
+                bird.update()
 
-        game_score += 1
+            frame_clock += 1
+            game_score += 1
+        # drawing stuff
         game_score_surface = game_score_font.render(str(game_score), True, (255, 255, 255))
         game_score_x = WIN_WIDTH / 2 - game_score_surface.get_width() / 2
         display_surface.blit(game_score_surface, (game_score_x, PipePair.PIECE_HEIGHT))
-    # update and display score
-    # for p in pipes: # we can't
-    #     if p.x + PipePair.WIDTH < bird.x and not p.score_counted:
-    #         score += 1
-    #         p.score_counted = True
+        # update and display score
+        # for p in pipes: # we can't
+        #     if p.x + PipePair.WIDTH < bird.x and not p.score_counted:
+        #         score += 1
+        #         p.score_counted = True
         gen_surface = game_score_font.render(f"GENERATION: {str(generation_num)}", True, (255, 0, 0))
         gen_x = WIN_WIDTH / 2 - gen_surface.get_width() / 2
         display_surface.blit(gen_surface, (gen_x, WIN_HEIGHT - 30))
@@ -461,9 +455,19 @@ def main():
         display_surface.blit(game_high_score_surface, (0, WIN_HEIGHT - game_high_score_surface.get_height()))
 
         pygame.display.flip()
-        frame_clock += 1
+        for x in (0, WIN_WIDTH / 2):
+            display_surface.blit(images['background'], (x, 0))
+        for p in pipes:
+            display_surface.blit(p.image, p.rect)
+        for bird in birds:
+            if bird.alive:
+                display_surface.blit(bird.image, bird.rect)
+
     print('Game over! Score: %i' % game_score)
     pygame.quit()
+
+    # def draw():
+    #     for i in range(cycles):
 
 
 # ------------------ GA STUFF FROM HERE ON ------------------
