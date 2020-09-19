@@ -58,7 +58,7 @@ class Bird(pygame.sprite.Sprite):
     CLIMB_SPEED = 0.4
     CLIMB_DURATION = 150
 
-    def think(self, pipes):  # bird decides weather it should jump or not -arya
+    def think(self, pipes):  # bird decides weather it should jump or not
         cur_pipe = (pipes[0]) if pipes[0].x > 0 else pipes[-1]
         y_velocity = self.CLIMB_SPEED if self.msec_to_climb > 0 else self.SINK_SPEED  # the current velocity of bird
         # our inputs are based on 5 factors: the bird's y, the pipes top and bottom y, the coming pipes x,
@@ -207,7 +207,7 @@ class PipePair(pygame.sprite.Sprite):
             PipePair.PIECE_HEIGHT  # to get number of pipe pieces
         )
         self.bottom_pieces = randint(1, total_pipe_body_pieces) - 1
-        # here we can change width of pipes to make game easier - Arya
+        # here we can change width of pipes to change game difficulty
         self.top_pieces = total_pipe_body_pieces - self.bottom_pieces - 1
 
         # bottom pipe
@@ -319,7 +319,7 @@ def load_images():
         # See also: https://github.com/TimoWilken/flappy-bird-pygame/pull/3
         file_name = os.path.join(os.path.dirname(__file__),
                                  'images', img_file_name)
-        img = pygame.image.load(file_name)  # we want to get latest non-negative pipe - arya
+        img = pygame.image.load(file_name)  # we want to get latest non-negative pipe
 
         img.convert()
         return img
@@ -369,7 +369,7 @@ def main():
     highest_game_score_font = pygame.font.SysFont(None, 22, bold=True)
     images = load_images()
 
-    birds = []  # we need more than one bird - arya
+    birds = []  # we need more than one bird for our GA algorithm
 
     for i in range(TOTAL):
         birds.append((Bird(50, int(WIN_HEIGHT / 2 - Bird.HEIGHT / 2), 2,
@@ -395,7 +395,7 @@ def main():
             if not (paused or frame_clock % msec_to_frames(PipePair.ADD_INTERVAL)):
                 pp = PipePair(images['pipe-end'], images['pipe-body'])
                 pipes.append(pp)
-            # we're gonna comment any user input out soon - arya
+                
             if keyboard.is_pressed('+'):
                 cycles += 50  # draw once every x+50 frames
                 time.sleep(0.15)
@@ -420,7 +420,7 @@ def main():
                     alive_birds -= 1
                     if alive_birds != 0:
                         continue
-                    # if we reach here, ALL birds have died, lets bring next generation - arya
+                    # if we reach here, ALL birds have died, lets bring next generation
                     if game_score > highest_game_score:
                         highest_game_score = game_score
                         # print(f"generation{generation_num} --> high_score!: {highest_game_score}")
@@ -428,7 +428,7 @@ def main():
                     game_score = 0
                     alive_birds = TOTAL
                     pipes[0].image.fill((0, 0, 0, 0))
-                    pipes[0].active = False  # might need to fix this later to remove pipes active - arya
+                    pipes[0].active = False 
                     calculate_fitness(birds)
                     birds = next_generation(birds)
                     break
