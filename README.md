@@ -19,13 +19,13 @@ You can use the following code to install my environment with pip:
 ```bash
 pip3 install -r requirements.txt
 ```
+## Notes
+** Press "+" to increase the learning speed, and "-" to reset it
+
+** without increasing the learning speed, it might take around 10 minutes of training to reach a bird that plays optimally
+
 
 ## Credits
 [TimoWilken](https://github.com/TimoWilken/flappy-bird-pygame) coded the base flappy bird game using Pygame
 
 [The Coding Train](https://thecodingtrain.com/) as reference for the genetics algorithm
-
-## Notes
-** Press "+" to increase the learning speed, and "-" to reset it
-
-** without increasing the learning speed, it might take around 10 minutes of training to reach a bird that plays optimally
