@@ -20,9 +20,8 @@ You can use the following code to install my environment with pip:
 pip3 install -r requirements.txt
 ```
 ## Notes
-** Press "+" to increase the learning speed, and "-" to reset it
-
-** without increasing the learning speed, it might take around 10 minutes of training to reach a bird that plays optimally
+- Press "+" to increase the learning speed, and "-" to reset it
+- without increasing the learning speed, it might take around 10 minutes of training to reach a bird that plays optimally
 
 
 ## Credits
