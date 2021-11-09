@@ -1,7 +1,7 @@
 # FlappyBird_GeneticsNN
 a program that trains an AI to play flappy bird by using neuroevolution, The program was made with Tensorflow
 
-![game example gif](https://s1.gifyu.com/images/ezgif.com-optimizea1bc81da832bafb8.gif)
+![game example gif](https://i.redd.it/0tuywd7tz4o51.gif)
 
 
 ## Installation Dependencies
